@@ -1,19 +1,27 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\SquareController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+//ROTAS DE AUTENTICAÇÃO
+Route::prefix('auth')->group(function () {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('logout', [AuthController::class, 'logout']);
+});
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::get('squares', [SquareController::class,'index']);
+Route::get('squares/export-pdf', [SquareController::class,'export']);
+Route::get('squares/{id}', [SquareController::class,'store']);
+
+//Proteção com middleware
+Route::middleware('auth:api')->prefix('admin')->group(function () {
+    Route::post('users',[UserController::class, 'store']);
+    Route::put('users/{id}', [UserController::class, 'update']);
+    Route::delete('users/{id}', [UserController::class, 'destroy']);
+
+    //Squares
+    Route::post('squares',[UserController::class, 'store']);
+    Route::put('squares/{id}', [UserController::class, 'update']);
+    Route::delete('squares/{id}', [UserController::class, 'destroy']);
 });
