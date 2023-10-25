@@ -14,6 +14,7 @@ class AuthenticationController extends Controller
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
+        
         $credentials = $request->only('email', 'password');
 
         $token = Auth::attempt($credentials);

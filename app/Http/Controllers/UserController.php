@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\User;
+use GuzzleHttp\Psr7\Request;
 
 class UserController extends Controller
 {
-    //
+    
 }

@@ -13,10 +13,11 @@ Route::prefix('auth')->group(function () {
 
 Route::get('squares', [SquareController::class,'index']);
 Route::get('squares/export-pdf', [SquareController::class,'export']);
-Route::get('squares/{id}', [SquareController::class,'store']);
+Route::get('squares/{id}', [SquareController::class,'show']);
 
 //Proteção com middleware
 Route::middleware('auth:api')->prefix('admin')->group(function () {
+    //Users
     Route::post('users',[UserController::class, 'store']);
     Route::put('users/{id}', [UserController::class, 'update']);
     Route::delete('users/{id}', [UserController::class, 'destroy']);

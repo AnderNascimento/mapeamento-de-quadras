@@ -3,6 +3,7 @@
 use App\Models\User;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -24,9 +25,8 @@ Artisan::command('make:admin', function () {
     $user->type = 1; //1 = Admin 2 = Padrão
     $user->name = $name;
     $user->email = $email;
-    $user->password = bcrypt($password);
+    $user->password = $password;
     $user->save();
 
     $this->info('Usuário criado/atualizado com sucesso');
-
 });
