@@ -34,8 +34,6 @@ Artisan::command('make:admin', function() {
 });
 
 Artisan::command('make:password_reset', function() {
-    //ETAPAS PARA REDEFINIR UMA SENHA
-    //Email, nova senha
     $email = $this->ask('Digite o e-mail');
 
     $user = User::query()->where('email', $email)->first();
