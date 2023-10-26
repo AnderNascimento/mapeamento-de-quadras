@@ -1,16 +1,18 @@
 <?php
 
+use App\Mail\NewPasswordMail;
 use App\Models\User;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
-Artisan::command('inspire', function () {
+Artisan::command('inspire', function() {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
 
-Artisan::command('make:admin', function () {
+Artisan::command('make:admin', function() {
     $hasAdmin = User::query()->where('type', 1)->count();
 
     if($hasAdmin > 0){
@@ -29,4 +31,24 @@ Artisan::command('make:admin', function () {
     $user->save();
 
     $this->info('Usuário criado/atualizado com sucesso');
+});
+
+Artisan::command('make:password_reset', function() {
+    //ETAPAS PARA REDEFINIR UMA SENHA
+    //Email, nova senha
+    $email = $this->ask('Digite o e-mail');
+
+    $user = User::query()->where('email', $email)->first();
+
+    if(!$user){
+       return $this->info('Email não encontrado!');
+    }
+
+    $password = Str::random(8);
+    $user->password = bcrypt($password);
+    $user->update();
+
+    Mail::to($user->email)->send(new NewPasswordMail(["password" => $password]));
+
+    $this->info('Senha atualizada com sucesso');
 });
