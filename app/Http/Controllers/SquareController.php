@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Square;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -11,7 +10,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use \DantSu\OpenStreetMapStaticAPI\OpenStreetMap;
 use \DantSu\OpenStreetMapStaticAPI\LatLng;
 use \DantSu\OpenStreetMapStaticAPI\Polygon;
-use \DantSu\OpenStreetMapStaticAPI\Markers;
 use PhpParser\JsonDecoder;
 
 class SquareController extends Controller
@@ -92,14 +90,8 @@ class SquareController extends Controller
         return response()->json(['message' => 'Quadra deletada com sucesso!'], 200);
    }
    //Exporta quadras
-   public function export()
+   public function implement()
    {
-        /*
-        $user = Auth::user();
-        $squares = Square::query()->where('user_id', Auth::user()->id)->get();
-        $pdf = PDF::loadView('export', compact('user','squares'));
-
-        */
         $square = Square::query()->find(1);
         $polygon = json_decode($square->polygon);
 
@@ -123,5 +115,14 @@ class SquareController extends Controller
             )
             ->getImage()
             ->displayPNG();
+   }
+
+   public function export()
+   {
+        $square = Square::query()->find(1);
+        $pdf = PDF::loadView('export', compact('square'));
+        $pdf->setPaper('A4', );
+
+        return $pdf->stream("quadras.pdf", array("Attachment" => false));
    }
 }
