@@ -9,6 +9,7 @@
         "barryvdh/laravel-dompdf": "^2.0",
         "dantsu/php-osm-static-api": "^0.6.4",
         "guzzlehttp/guzzle": "^7.2",
+        "intervention/image": "^2.7",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
