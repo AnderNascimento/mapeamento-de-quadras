@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Square;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use DantSu\OpenStreetMapStaticAPI\LatLng;
 use DantSu\OpenStreetMapStaticAPI\OpenStreetMap;
@@ -92,9 +93,9 @@ class SquareController extends Controller
     }
 
     //Exporta o mapa para PDF
-    public function export()
+    public function export(int $id)
     {
-        $square = Square::query()->find(1);
+        $square = Square::query()->with('user')->find($id);
 
         $image = $this->createMap($square);
 
@@ -108,28 +109,31 @@ class SquareController extends Controller
     //Cria imagem da quadra no mapa
     private function createMap(Square $square)
     {
-        $polygon = json_decode($square->polygon);
+        $startingPoint = $square->starting_point;
+        $perimeter = new Polygon('FF0000', 2, 'FF0000DD');
 
         $polygonArray = [];
 
-        foreach ($polygon as $poly) {
-            $polygonArray[] = new LatLng($poly[1], $poly[0]);
+        foreach ($square->polygon as $poly) {
+            $latLgn = new LatLng($poly[1], $poly[0]);
+
+            $polygonArray = $latLgn;
+
+            $perimeter->addPoint($polygonArray);
         }
 
-        $perimeter = new Polygon('FF0000', 2, 'FF0000DD');
-        $perimeter->addPoint($polygonArray[1]);
-        $perimeter->addPoint($polygonArray[2]);
-        $perimeter->addPoint($polygonArray[3]);
-        $perimeter->addPoint($polygonArray[4]);
-        $perimeter->addPoint($polygonArray[5]);
-        $perimeter->addPoint($polygonArray[6]);
-        $perimeter->addPoint($polygonArray[7]);
-
         try {
-            $osm = new OpenStreetMap(new LatLng(-10.7475543, -37.8078148), 16, 600, 400);
-            $image = $osm->addDraw($perimeter)
+            if(isset($startingPoint)){
+                $startingPoint = new LatLng($startingPoint[1], $startingPoint[0]);
+            } else {
+                $startingPoint = new LatLng($poly[1], $poly[0]);
+            }
+
+            $osm = new OpenStreetMap($startingPoint, 16, 600, 400);
+                $image = $osm->addDraw($perimeter)
                 ->getImage()
                 ->getBase64JPG();
+
         } catch (\Throwable $th) {
             throw $th;
         }

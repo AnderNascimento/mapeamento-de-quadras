@@ -13,7 +13,7 @@ Route::prefix('auth')->group(function () {
 
 //Rotas básicas das quadras
 Route::get('squares', [SquareController::class, 'index']);
-Route::get('squares/export', [SquareController::class, 'export']);
+Route::get('squares/{id}/export', [SquareController::class, 'export']);
 Route::get('squares/{id}', [SquareController::class, 'show']);
 
 //Proteção com middleware

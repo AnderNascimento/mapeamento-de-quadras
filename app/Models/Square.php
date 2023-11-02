@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int    $user_id
  * @property string name
  * @property int    total_units
- * @property json   polygon
- * @property string starting_point
+ * @property array  polygon
+ * @property array  starting_point
  */
 
 class Square extends Model
@@ -25,6 +25,11 @@ class Square extends Model
         'total_units',
         'polygon',
         'starting_point',
+    ];
+
+    protected $casts = [
+        'starting_point' => 'array',
+        'polygon' => 'array'
     ];
 
     public function user(): BelongsTo

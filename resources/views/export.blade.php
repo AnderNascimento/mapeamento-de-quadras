@@ -16,6 +16,10 @@
                         <td>Criação</td>
                         <td>{{ $square->created_at->format('d/m/Y H:i') }}</td>
                     </tr>
+                    <tr>
+                        <td>Responsável</td>
+                        <td>{{ $square->user->name }}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
