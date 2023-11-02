@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Square;
-use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use DantSu\OpenStreetMapStaticAPI\LatLng;
 use DantSu\OpenStreetMapStaticAPI\OpenStreetMap;
@@ -123,14 +122,14 @@ class SquareController extends Controller
         }
 
         try {
-            if(isset($startingPoint)){
+            if (isset($startingPoint)) {
                 $startingPoint = new LatLng($startingPoint[1], $startingPoint[0]);
             } else {
                 $startingPoint = new LatLng($poly[1], $poly[0]);
             }
 
             $osm = new OpenStreetMap($startingPoint, 16, 600, 400);
-                $image = $osm->addDraw($perimeter)
+            $image = $osm->addDraw($perimeter)
                 ->getImage()
                 ->getBase64JPG();
 

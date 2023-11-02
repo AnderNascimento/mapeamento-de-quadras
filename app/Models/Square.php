@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property array  polygon
  * @property array  starting_point
  */
-
 class Square extends Model
 {
     use HasFactory;
@@ -29,7 +28,7 @@ class Square extends Model
 
     protected $casts = [
         'starting_point' => 'array',
-        'polygon' => 'array'
+        'polygon' => 'array',
     ];
 
     public function user(): BelongsTo

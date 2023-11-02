@@ -1,17 +1,39 @@
 # Mapeamento de Quadras PHP API
 
-Este projeto utiliza a biblioteca [DantSu PHP OSM STATIC API](https://github.com/DantSu/php-osm-static-api) para manipular dados e gerar imagem do OpenStreetMap.
+Este projeto tem como objetivo implementar um CRUD para auxílio no cadastro de quadras. Com estas quadras as pessoas envolvidas conseguem gerar relatórios que as auxiliam na organização de suas rotinas.
+
+Exemplos de uso: Criação de escala de trabalho para profissionais que trabalham de porta-a-porta, como entregadores, fiscais ou agentes de saúde.
+
+## Bibliotecas utilizadas
+
+Este projeto utiliza as bibliotecas:
+- [DantSu PHP OSM STATIC API](https://github.com/DantSu/php-osm-static-api)
+- barryvdh/laravel-dompdf
+- php-open-source-saver/jwt-auth
 
 
 ## Features
 
-Esta API possui métodos de Login/Logout, criação de usuário padrão e administrador. Criação, atualização, exclusão e também exportação de quadras para PDF.
+Esta API possui métodos:
+- Autenticação.
+- Criação de usuário padrão (Cadastrador de quadras) e administrador.
+- Criação, atualização, exclusão de quadras 
+- Exportação de relatórios para PDF.
+
+## Exemplo de relatório
+
+[Relatório PDF](exemplo-relatorio.pdf)
+
 
 ## Instalação
 
 Instale esta biblioteca com o comando
 ´´´
-composer require AnderNascimeno/mapeamento-de-quadras
+composer create laravel/laravel mapeamento-de-quadras
+
+cd mapeamento-de-quadras
+composer install
+cp .env.example .env
 ´´´
 
 ## Criando um usuário admin
@@ -34,3 +56,4 @@ A biblioteca do OSM quebra em localhost devido ao REQUEST_SCHEME inválido, nece
 ```
 vendor/dantsu/php-image-editor/src/Image.php linha 311
 ```
+
