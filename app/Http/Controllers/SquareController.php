@@ -3,15 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Square;
+use Barryvdh\DomPDF\Facade\Pdf;
+use DantSu\OpenStreetMapStaticAPI\LatLng;
+use DantSu\OpenStreetMapStaticAPI\OpenStreetMap;
+use DantSu\OpenStreetMapStaticAPI\Polygon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade\Pdf;
-
-use \DantSu\OpenStreetMapStaticAPI\OpenStreetMap;
-use \DantSu\OpenStreetMapStaticAPI\LatLng;
-use \DantSu\OpenStreetMapStaticAPI\Polygon;
-use Dotenv\Util\Str;
-use Illuminate\Support\Facades\Storage;
 
 class SquareController extends Controller
 {
@@ -23,97 +20,97 @@ class SquareController extends Controller
         return response()->json($squares);
     }
 
-   //Cadastra quadras
-   public function store(Request $request)
-   {
+    //Cadastra quadra
+    public function store(Request $request)
+    {
         $request->validate([
             'name' => 'required|string',
             'total_units' => 'required|integer',
             'polygon' => 'required|json',
-            'starting_point' => 'required|string'
+            'starting_point' => 'required|string',
         ]);
 
-        $square                 = new Square();
-        $square->id             = $request->get('id');
-        $square->name           = $request->get('name');
-        $square->user_id        = auth()->user()->id;
-        $square->total_units    = $request->get('total_units');
-        $square->polygon        = $request->get('polygon');
+        $square = new Square();
+        $square->id = $request->get('id');
+        $square->name = $request->get('name');
+        $square->user_id = auth()->user()->id;
+        $square->total_units = $request->get('total_units');
+        $square->polygon = $request->get('polygon');
         $square->starting_point = $request->get('starting_point');
         $square->save();
 
         return response()->json($square);
-   }
+    }
 
-   //Busca quadras
-   public function show(int $id)
-   {
+    //Busca quadra
+    public function show(int $id)
+    {
         $square = Square::with('user')->where([
             'user_id' => Auth::user()->id,
-            'id' => $id
+            'id' => $id,
         ])->first();
 
-        if(!$square){
+        if (! $square) {
             return response()->json(['message' => 'Quadra não encontada!'], 404);
         }
 
         return response()->json($square);
-   }
+    }
 
-   //Atualiza quadras
-   public function update(int $id, Request $request)
-   {
+    //Atualiza quadra
+    public function update(int $id, Request $request)
+    {
         $request->validate([
             'name' => 'required|string',
             'total_units' => 'required|integer',
             'polygon' => 'required|json',
-            'starting_point' => 'required|string'
+            'starting_point' => 'required|string',
         ]);
 
         $square = Square::query()->where('user_id', Auth::user()->id)->find($id);
-        $square->name           = $request->get('name');
-        $square->total_units    = $request->get('total_units');
-        $square->polygon        = $request->get('polygon');
+        $square->name = $request->get('name');
+        $square->total_units = $request->get('total_units');
+        $square->polygon = $request->get('polygon');
         $square->starting_point = $request->get('starting_point');
         $square->update();
 
         return response()->json($square);
-   }
+    }
 
-   //Deleta quadras
-   public function destroy(int $id)
-   {
+    //Deleta quadra
+    public function destroy(int $id)
+    {
         $square = Square::query()->where('user_id', Auth::user()->id)->find($id);
 
-        if(!$square){
+        if (! $square) {
             return response()->json(['message' => 'Quadra não encontada!'], 404);
         }
 
         $square->delete();
 
         return response()->json(['message' => 'Quadra deletada com sucesso!'], 200);
-   }
+    }
 
-   //Exporta para PDF
-   public function export()
-   {
+    //Exporta o mapa para PDF
+    public function export()
+    {
         $square = Square::query()->find(1);
 
         $image = $this->createMap($square);
 
         $pdf = PDF::loadView('export', compact('square', 'image'));
-        
-        $pdf->setPaper('A4', );
 
-        return $pdf->stream("quadras.pdf", array("Attachment" => false));
-   }
+        $pdf->setPaper('A4', 'portrait');
 
-   //Cria imagem do mapa
-   private function createMap(Square $square)
-   {
+        return $pdf->stream('quadras.pdf', ['Attachment' => false]);
+    }
+
+    //Cria imagem da quadra no mapa
+    private function createMap(Square $square)
+    {
         $polygon = json_decode($square->polygon);
 
-        $polygonArray =[];
+        $polygonArray = [];
 
         foreach ($polygon as $poly) {
             $polygonArray[] = new LatLng($poly[1], $poly[0]);
@@ -129,7 +126,7 @@ class SquareController extends Controller
         $perimeter->addPoint($polygonArray[7]);
 
         try {
-            $osm = new OpenStreetMap(new LatLng( -10.7475543, -37.8078148), 16, 600, 400);
+            $osm = new OpenStreetMap(new LatLng(-10.7475543, -37.8078148), 16, 600, 400);
             $image = $osm->addDraw($perimeter)
                 ->getImage()
                 ->getBase64JPG();
@@ -138,5 +135,5 @@ class SquareController extends Controller
         }
 
         return $image;
-   }
+    }
 }

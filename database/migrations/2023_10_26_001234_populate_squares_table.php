@@ -12,16 +12,16 @@ return new class extends Migration
             file_get_contents(storage_path('app/squares.csv'))
         );
 
-        foreach($squares as $square){
+        foreach ($squares as $square) {
             $square = explode(',', $square);
-            if(!isset($square[1])){
+            if (! isset($square[1])) {
                 continue;
             }
 
-            $newSquare                 = new Square();
-            $newSquare->user_id        = 1;
-            $newSquare->name           = $square[0];
-            $newSquare->polygon        = $square[1];
+            $newSquare = new Square();
+            $newSquare->user_id = 1;
+            $newSquare->name = $square[0];
+            $newSquare->polygon = $square[1];
             $newSquare->starting_point = $square[2];
             $newSquare->save();
         }

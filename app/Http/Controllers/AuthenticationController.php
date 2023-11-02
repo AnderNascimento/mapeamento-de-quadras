@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,11 +13,11 @@ class AuthenticationController extends Controller
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
-        
+
         $credentials = $request->only('email', 'password');
 
         $token = Auth::attempt($credentials);
-        if (!$token) {
+        if (! $token) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unauthorized',
@@ -26,12 +25,28 @@ class AuthenticationController extends Controller
         }
 
         $user = Auth::user();
+
         return response()->json([
             'user' => $user,
             'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',
-            ]
-        ]);
+            ],
+        ], 200);
+    }
+
+    public function logout()
+    {
+        $logout = Auth::logout();
+
+        if ($logout) {
+            return response()->json([
+                'message' => 'Logout bem sucedido',
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Usuário não está logado',
+            ], 404);
+        }
     }
 }

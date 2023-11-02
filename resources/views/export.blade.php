@@ -21,6 +21,7 @@
         </div>
     </div>
 </div>
+
 <style>
 table {
     width: 100%;

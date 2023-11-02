@@ -7,23 +7,25 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    //Cadastra usuário
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|string',
-            'password' => 'required|string'
+            'password' => 'required|string',
         ]);
 
-        $user           = new User();
-        $user->name     = $request->get('name');
-        $user->email    = $request->get('email');
+        $user = new User();
+        $user->name = $request->get('name');
+        $user->email = $request->get('email');
         $user->password = bcrypt($request->get('password'));
         $user->save();
 
         return response()->json($user);
     }
 
+    //Mostra usuário
     public function show(int $id, Request $request)
     {
         $user = User::query()->find($id);
@@ -31,42 +33,44 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    //Atualiza usuário
     public function update(int $id, Request $request)
     {
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|string',
-            'password' => 'required|string'
+            'password' => 'required|string',
         ]);
 
         $user = User::query()->find($id);
 
-        if(!$user){
-            return response()->json(["message" => "Usuário não encontrado"]);
+        if (! $user) {
+            return response()->json(['message' => 'Usuário não encontrado'], 404);
         }
 
-        $user->name     = $request->get('name');
-        $user->email    = $request->get('email');
+        $user->name = $request->get('name');
+        $user->email = $request->get('email');
         $user->password = bcrypt($request->get('password'));
         $user->update();
 
         return response()->json($user);
     }
 
+    //Deleta usuário
     public function destroy(int $id)
     {
         $user = User::query()->find($id);
 
-        if(!$user){
-            return response()->json(["message" => "Usuário não encontrado"], 404);
+        if (! $user) {
+            return response()->json(['message' => 'Usuário não encontrado'], 404);
         }
 
-        if($user->id == 1){
-            return response()->json(["message" => "Usuário admin não pode ser excluído"], 403);
+        if ($user->id == 1) {
+            return response()->json(['message' => 'Usuário admin não pode ser excluído'], 403);
         }
 
         $user->delete();
 
-        return response()->json(["message" => "Usuário excluído com sucesso"], 200);
+        return response()->json(['message' => 'Usuário excluído com sucesso'], 200);
     }
 }

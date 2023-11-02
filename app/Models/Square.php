@@ -15,10 +15,11 @@ class Square extends Model
         'user_id',
         'total_units',
         'polygon',
-        'starting_point'
+        'starting_point',
     ];
 
-    public function user(): BelongsTo{
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 }
